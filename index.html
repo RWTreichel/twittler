@@ -3,23 +3,53 @@
   <head>
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
+    <script src="underbar.js"></script>
   </head>
   <body>
     <script>
 
       $(document).ready(function(){
         var $body = $('body');
+        var previousTweets = [];
+
+        // Find the difference between the current tweet list and the
+        // user's view of the tweet list.
+        var fetchNewTweets = function() {
+          var newTweets = _.difference(streams.home, previousTweets);
+          previousTweets = newTweets;
+
+          return newTweets;
+        };
+
+        // Fetch new tweets and append them to the DOM.
+        var writeNewTweets = function() {
+          var newTweets = fetchNewTweets();
+
+          for (var i = 0, len = newTweets.length; i < len; i++) {
+            var tweet = newTweets[i];
+            var $tweet = $('<div></div>');
+            $tweet.text('@' + tweet.user + ': ' + tweet.message + 
+              " - " + tweet.created_at);
+            $tweet.appendTo($body);
+          }
+        };
+
         $body.html('');
 
         var index = streams.home.length - 1;
         while(index >= 0){
           var tweet = streams.home[index];
           var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
+          $tweet.text('@' + tweet.user + ': ' + tweet.message + 
+            " - " + tweet.created_at);
           $tweet.appendTo($body);
           index -= 1;
         }
 
+        // Set initial tweet list, then start a process to update the
+        // tweet list.
+        previousTweets = fetchNewTweets();
+        setInterval(writeNewTweets, 5000);
       });
 
     </script>
