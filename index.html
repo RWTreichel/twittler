@@ -7,11 +7,19 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
   </head>
   <body>
+    <div class="tweet-list"></div>
+    <div class="inputs">
+      <label>Username:<input type="text" class="username"></label>
+      <label>Message:<input type="text" class="message"></label>
+      <input type="button" class="send" value="Send tweet">
+      <input type="button" class="back" value="Back to home">
+    </div>
     <script>
 
       $(document).ready(function(){
         var $body = $('body');
-        var $tweetList = $('<div class="tweet-list"></div>');
+        var $tweetList = $body.find('.tweet-list');
+        var $backButton = $body.find('.back');
         var previousTweets = [];
 
         // Find the difference between the current tweet list and the
@@ -41,9 +49,23 @@
           return $tweet;
         };
 
-        // Clear the display and set up the tweet list container.
-        $body.html('');
-        $body.prepend($tweetList);
+        var updateTweets = function(window) {
+          // Starts a process to update the home page tweet list.
+          // Return's a handler used to manipulate the interval object.
+          var intervalHandler = window.setInterval(function() {
+            var newTweets = fetchNewTweets();
+            previousTweets = streams.home.slice(0);
+            writeTweets(newTweets);
+          }, 5000);
+
+          return intervalHandler;
+        };
+
+        // Clear the display and set up the home page.
+        // $body.html('');
+        // $body.append($inputs);
+        // $body.append($tweetList);
+        $backButton.addClass('hidden');
 
         // Initialize the tweet list.
         var index = streams.home.length - 1;
@@ -56,11 +78,7 @@
         // Record initial tweet list, then start a process to update the
         // tweet list.
         previousTweets = fetchNewTweets();
-        var updateHome = setInterval(function() {
-          var newTweets = fetchNewTweets();
-          previousTweets = streams.home.slice(0);
-          writeTweets(newTweets);
-        }, 5000);
+        var updateHome = updateTweets(window);
 
         $tweetList.on('click', 'a', function(e) {
           e.preventDefault();
@@ -76,6 +94,7 @@
           writeTweets(streams.users[username]);
         });
       });
+
     </script>
   </body>
 </html>
