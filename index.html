@@ -11,6 +11,7 @@
 
       $(document).ready(function(){
         var $body = $('body');
+        var $tweetList = $('<div class="tweet-list"></div>');
         var previousTweets = [];
 
         // Find the difference between the current tweet list and the
@@ -22,13 +23,11 @@
           return newTweets;
         };
 
-        // Fetch new tweets and append them to the DOM.
-        var writeNewTweets = function() {
-          var newTweets = fetchNewTweets();
-
-          for (var i = 0, len = newTweets.length; i < len; i++) {
-            var tweet = newTweets[i];
-            composeTweet(tweet).prependTo($body);
+        // Prepend an array of composed tweets to the tweet list
+        // (Prepending achieves reverse chronological order).
+        var writeTweets = function(tweets) {
+          for (var i = 0, len = tweets.length; i < len; i++) {
+            composeTweet(tweets[i]).prependTo($body);
           }
         };
 
@@ -36,7 +35,9 @@
         var composeTweet = function(tweet) {
           var $tweet = $('<div class="tweet"></div>');
           var $created_at = $('<div class="created-at"></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
+
+          $tweet.html('<a href="">@' + tweet.user + '</a>'
+            + ": " + tweet.message);
           $tweet.append($created_at);
           $tweet.find('.created-at').text(tweet.created_at);
 
@@ -57,7 +58,10 @@
         // Record initial tweet list, then start a process to update the
         // tweet list.
         previousTweets = fetchNewTweets();
-        setInterval(writeNewTweets, 5000);
+        setInterval(function() {
+          var newTweets = fetchNewTweets();
+          writeTweets(newTweets);
+        }, 5000);
       });
 
     </script>
