@@ -16,7 +16,7 @@
         // user's view of the tweet list.
         var fetchNewTweets = function() {
           var newTweets = _.difference(streams.home, previousTweets);
-          previousTweets = newTweets;
+          previousTweets = streams.home.slice(0);
 
           return newTweets;
         };
@@ -30,7 +30,7 @@
             var $tweet = $('<div></div>');
             $tweet.text('@' + tweet.user + ': ' + tweet.message + 
               " - " + tweet.created_at);
-            $tweet.appendTo($body);
+            $tweet.prependTo($body);
           }
         };
 
@@ -42,7 +42,7 @@
           var $tweet = $('<div></div>');
           $tweet.text('@' + tweet.user + ': ' + tweet.message + 
             " - " + tweet.created_at);
-          $tweet.appendTo($body);
+          $tweet.prependTo($body);
           index -= 1;
         }
 
