@@ -1,0 +1,11 @@
+div {
+	width: 50%;
+	margin: 1em auto;
+	border: 1px solid #55ACEE;
+	padding: 5px;
+	border-radius: 10px;
+}
+
+body {
+	background-color: rgba(85,172,238,0.20);
+}
