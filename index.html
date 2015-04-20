@@ -12,7 +12,7 @@
       <label>Username:<input type="text" class="username"></label>
       <label>Message:<input type="text" class="message"></label>
       <input type="button" class="send" value="Send tweet">
-      <input type="button" class="back" value="Back to home">
+      <input type="button" class="back hidden" value="Back to home">
     </div>
     <script>
 
@@ -61,12 +61,6 @@
           return intervalHandler;
         };
 
-        // Clear the display and set up the home page.
-        // $body.html('');
-        // $body.append($inputs);
-        // $body.append($tweetList);
-        $backButton.addClass('hidden');
-
         // Initialize the tweet list.
         var index = streams.home.length - 1;
         while(index >= 0){
@@ -80,18 +74,44 @@
         previousTweets = fetchNewTweets();
         var updateHome = updateTweets(window);
 
+        // Click handler used to filter the tweet list.
         $tweetList.on('click', 'a', function(e) {
           e.preventDefault();
+
+          // Show the back button.
+          $backButton.removeClass('hidden');
 
           // .slice(1) to remove the @ symbol.
           var username = $(this).text().slice(1);
 
           // Clear the tweet list.
           $tweetList.empty();
+
+          // Stop the update process temporarily.
           window.clearInterval(updateHome);
 
           // Write only the selected user's tweets to the tweet list.
           writeTweets(streams.users[username]);
+        });
+
+        // Click handler used to return to the home page and
+        // restart the update process.
+        $backButton.on('click', function(e) {
+          e.preventDefault();
+
+          // Hide the back button.
+          $backButton.addClass('hidden');
+
+          // Clear the tweet list.
+          $tweetList.empty();
+
+          // Rewrite all previous tweets to the tweet list, and record them
+          // in previousTweets.
+          writeTweets(streams.home);
+          previousTweets = streams.home.slice(0);
+
+          // Restart the update process for the home page tweet list.
+          updateHome = updateTweets(window);
         });
       });
 
