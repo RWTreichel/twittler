@@ -17,17 +17,14 @@
         // Find the difference between the current tweet list and the
         // user's view of the tweet list.
         var fetchNewTweets = function() {
-          var newTweets = _.difference(streams.home, previousTweets);
-          previousTweets = streams.home.slice(0);
-
-          return newTweets;
+          return _.difference(streams.home, previousTweets);
         };
 
         // Prepend an array of composed tweets to the tweet list
         // (Prepending achieves reverse chronological order).
         var writeTweets = function(tweets) {
           for (var i = 0, len = tweets.length; i < len; i++) {
-            composeTweet(tweets[i]).prependTo($body);
+            composeTweet(tweets[i]).prependTo($tweetList);
           }
         };
 
@@ -44,26 +41,41 @@
           return $tweet;
         };
 
-        // Clear the display.
+        // Clear the display and set up the tweet list container.
         $body.html('');
+        $body.prepend($tweetList);
 
         // Initialize the tweet list.
         var index = streams.home.length - 1;
         while(index >= 0){
           var tweet = streams.home[index];
-          composeTweet(tweet).prependTo($body);
+          composeTweet(tweet).prependTo($tweetList);
           index -= 1;
         }
 
         // Record initial tweet list, then start a process to update the
         // tweet list.
         previousTweets = fetchNewTweets();
-        setInterval(function() {
+        var updateHome = setInterval(function() {
           var newTweets = fetchNewTweets();
+          previousTweets = streams.home.slice(0);
           writeTweets(newTweets);
         }, 5000);
-      });
 
+        $tweetList.on('click', 'a', function(e) {
+          e.preventDefault();
+
+          // .slice(1) to remove the @ symbol.
+          var username = $(this).text().slice(1);
+
+          // Clear the tweet list.
+          $tweetList.empty();
+          window.clearInterval(updateHome);
+
+          // Write only the selected user's tweets to the tweet list.
+          writeTweets(streams.users[username]);
+        });
+      });
     </script>
   </body>
 </html>
