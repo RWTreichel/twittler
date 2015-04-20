@@ -28,26 +28,33 @@
 
           for (var i = 0, len = newTweets.length; i < len; i++) {
             var tweet = newTweets[i];
-            var $tweet = $('<div></div>');
-            $tweet.text('@' + tweet.user + ': ' + tweet.message + 
-              " - " + tweet.created_at);
-            $tweet.prependTo($body);
+            composeTweet(tweet).prependTo($body);
           }
         };
 
+        // Constructs the tweet's HTML structure.
+        var composeTweet = function(tweet) {
+          var $tweet = $('<div class="tweet"></div>');
+          var $created_at = $('<div class="created-at"></div>');
+          $tweet.text('@' + tweet.user + ': ' + tweet.message);
+          $tweet.append($created_at);
+          $tweet.find('.created-at').text(tweet.created_at);
+
+          return $tweet;
+        };
+
+        // Clear the display.
         $body.html('');
 
+        // Initialize the tweet list.
         var index = streams.home.length - 1;
         while(index >= 0){
           var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message + 
-            " - " + tweet.created_at);
-          $tweet.prependTo($body);
+          composeTweet(tweet).prependTo($body);
           index -= 1;
         }
 
-        // Set initial tweet list, then start a process to update the
+        // Record initial tweet list, then start a process to update the
         // tweet list.
         previousTweets = fetchNewTweets();
         setInterval(writeNewTweets, 5000);
