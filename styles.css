@@ -1,11 +1,40 @@
+body {
+	background-color: rgba(85, 172, 238, 0.20);
+}
+
 div {
 	width: 50%;
-	margin: 1em auto;
+	margin: 1% auto;
 	border: 1px solid #55ACEE;
 	padding: 5px;
 	border-radius: 10px;
 }
 
-body {
-	background-color: rgba(85,172,238,0.20);
+.tweet-list {
+
+}
+
+.created-at {
+	margin: 0.2em auto 0.2em 0.2em;
+	width: 42%;
+	text-align: center;
+}
+
+.tweet {
+	width: 95%;
+}
+
+.inputs {
+	position: fixed;
+	width: 20%;
+	top: 0;
+}
+
+.inputs input {
+	display: block;
+	margin: 5px 0;
+}
+
+.inputs .hidden {
+	display: none;
 }
