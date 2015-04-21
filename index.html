@@ -9,17 +9,20 @@
   <body>
     <div class="tweet-list"></div>
     <div class="inputs">
-      <label>Username:<input type="text" class="username"></label>
-      <label>Message:<input type="text" class="message"></label>
+      <label>Username:<input type="text" class="username" placeholder="newUser" autofocus></label>
+      <label>Message:<input type="text" class="message" placeholder="Howdy!"></label>
       <input type="button" class="send" value="Send tweet">
       <input type="button" class="back hidden" value="Back to home">
     </div>
-    <script>
 
+    <script>
       $(document).ready(function(){
         var $body = $('body');
         var $tweetList = $body.find('.tweet-list');
-        var $backButton = $body.find('.back');
+        var $username = $body.find('.inputs .username');
+        var $message = $body.find('.inputs .message');
+        var $sendButton = $body.find('.inputs .send');
+        var $backButton = $body.find('.inputs .back');
         var previousTweets = [];
 
         // Find the difference between the current tweet list and the
@@ -113,8 +116,24 @@
           // Restart the update process for the home page tweet list.
           updateHome = updateTweets(window);
         });
-      });
 
+        $sendButton.on('click', function() {
+          var tweet = {
+            user: $username.val(),
+            message: $message.val(),
+            created_at: new Date()
+          };
+
+          if (!streams.users[tweet.user]) {
+            streams.users[tweet.user] = [];
+          }
+
+          addTweet(tweet);
+          $message.val('');
+          $message.focus();
+        });
+      });
     </script>
+
   </body>
 </html>
